@@ -31,7 +31,7 @@ pipeline {
                 withEnv(['DOCKER_HOST=tcp://localhost:2375']) {
                     bat 'docker build -t javaangulardemo-app .'
                     bat 'docker rm -f javaangulardemo-container >nul 2>&1 || ver >nul'
-                    bat 'docker run -d --name javaangulardemo-container -p 8080:8080 javaangulardemo-app'
+                    bat 'docker run -d --name javaangulardemo-container -p 8081:8080 javaangulardemo-app'
                 }
             }
         }
