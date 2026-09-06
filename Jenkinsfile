@@ -9,53 +9,40 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                // Checkout code from develop branch
-                git branch: 'develop', url: 'https://github.com/pjpaparao/springboot.git'
+                git branch: 'develop', url: 'https://github.com/pjpaparao/javaangulardemo.git'
             }
         }
 
         stage('Build') {
             steps {
-                dir('jenkinpipelnedemo') {
-                    // Compile and package application
-                    bat 'mvn clean package -DskipTests'
-                }
+                // Run Maven at repo root (where pom.xml exists)
+                bat 'mvn clean package -DskipTests'
             }
         }
 
         stage('Test') {
             steps {
-                dir('jenkinpipelnedemo') {
-                    // Run unit tests
-                    bat 'mvn test'
-                }
+                bat 'mvn test'
             }
         }
 
         stage('Deploy') {
             steps {
-                dir('jenkinpipelnedemo') {
-                    withEnv(['DOCKER_HOST=tcp://localhost:2375']) {
-                        // 1. Build application Docker image
-                        bat 'docker build -t springboot-app .'
-                        
-                        // 2. Stop and remove old container if it exists
-                        bat 'docker rm -f springboot-app-container >nul 2>&1 || ver >nul'
-                        
-                        // 3. Start Spring Boot container directly
-                        bat 'docker run -d --name springboot-app-container -p 8080:8080 springboot-app'
-                    }
+                withEnv(['DOCKER_HOST=tcp://localhost:2375']) {
+                    bat 'docker build -t javaangulardemo-app .'
+                    bat 'docker rm -f javaangulardemo-container >nul 2>&1 || ver >nul'
+                    bat 'docker run -d --name javaangulardemo-container -p 8080:8080 javaangulardemo-app'
                 }
             }
         }
     }
 
     post {
-        success { 
-            echo 'Pipeline executed successfully! App is available at http://localhost:8080/' 
+        success {
+            echo 'Pipeline executed successfully! App is available at http://localhost:8080/'
         }
-        failure { 
-            echo 'Pipeline failed! Check console output for logs.' 
+        failure {
+            echo 'Pipeline failed! Check console output for logs.'
         }
     }
 }
