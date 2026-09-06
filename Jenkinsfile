@@ -32,6 +32,7 @@ pipeline {
                     bat 'docker build -t javaangulardemo-app .'
                     bat 'docker rm -f javaangulardemo-container >nul 2>&1 || ver >nul'
                     bat 'docker run -d --name javaangulardemo-container -p 8081:8080 javaangulardemo-app'
+                    
                 }
             }
         }
